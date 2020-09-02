@@ -11,7 +11,8 @@ import fbConnection from '../helpers/data/connection';
 import Auth from '../components/pages/Auth/Auth';
 import EditStuff from '../components/pages/EditStuff/EditStuff';
 import Home from '../components/pages/Home/Home';
-import Navbar from '../components/pages/Navbar/Navbar';
+import MyNavbar from '../components/pages/MyNavbar/MyNavbar';
+import MyStuff from '../components/pages/MyStuff/MyStuff';
 import NewStuff from '../components/pages/NewStuff/NewStuff';
 import SingleStuff from '../components/pages/SingleStuff/SingleStuff';
 import './App.scss';
@@ -52,13 +53,14 @@ class App extends React.Component {
       <div className="App">
         <BrowserRouter>
           <React.Fragment>
-            <Navbar authed={authed}/>
+            <MyNavbar authed={authed}/>
             <div className="container">
               <Switch>
                 <PrivateRoute path="/home" component={Home} authed={authed} />
                 <PrivateRoute path="/new" component={NewStuff} authed={authed} />
                 <PrivateRoute path="/edit/:stuffId" component={EditStuff} authed={authed} />
-                <PrivateRoute path="/stuff:stuffId" component={SingleStuff} authed={authed} />
+                <PrivateRoute path="/stuff/:stuffId" component={SingleStuff} authed={authed} />
+                <PrivateRoute path="/stuff" component={MyStuff} authed={authed} />
                 <PublicRoute path="/auth" component={Auth} authed={authed} />
                 <Redirect from="*" to="/home" />
               </Switch>
