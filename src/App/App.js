@@ -1,45 +1,70 @@
 import React from 'react';
+import {
+  BrowserRouter,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-// import authData from '../helpers/data/authData';
 import fbConnection from '../helpers/data/connection';
+import Auth from '../components/pages/Auth/Auth';
+import EditStuff from '../components/pages/EditStuff/EditStuff';
+import Home from '../components/pages/Home/Home';
 import Navbar from '../components/pages/Navbar/Navbar';
+import NewStuff from '../components/pages/NewStuff/NewStuff';
+import SingleStuff from '../components/pages/SingleStuff/SingleStuff';
 import './App.scss';
 
 fbConnection();
 
+const PublicRoute = ({ component: Component, authed, ...rest }) => {
+  const routeChecker = (props) => (authed === false
+    ? (<Component {...props} />)
+    : (<Redirect to={{ pathname: '/home', state: { from: props.location } }} />));
+  return <Route {...rest} render={(props) => routeChecker(props)} />;
+};
+const PrivateRoute = ({ component: Component, authed, ...rest }) => {
+  const routeChecker = (props) => (authed === true
+    ? (<Component {...props} />)
+    : (<Redirect to={{ pathname: '/auth', state: { from: props.location } }} />));
+  return <Route {...rest} render={(props) => routeChecker(props)} />;
+};
 class App extends React.Component {
   state = {
     authed: false,
   }
 
   componentDidMount() {
-    this.listener = firebase.auth().onAuthStateChanged((user) => {
+    this.removeListener = firebase.auth().onAuthStateChanged((user) => {
       user ? this.setState({ authed: true }) : this.setState({ authed: false });
     });
   }
 
   componentWillUnmount() {
-    this.listener();
+    this.removeListener();
   }
 
   render() {
     const { authed } = this.state;
 
-    // const loadComponent = () => {
-    //   if (authed) {
-    //     const uid = authData.getUid();
-    //     return ;
-    //   }
-    //   return (
-    //     <h2 className="text-center">Please login to view the roster</h2>
-    //   );
-    // }
-
     return (
       <div className="App">
-        <h1>React-Hoarder</h1>
-        <Navbar authed={authed}/>
+        <BrowserRouter>
+          <React.Fragment>
+            <Navbar authed={authed}/>
+            <div className="container">
+              <Switch>
+                <PrivateRoute path="/home" component={Home} authed={authed} />
+                <PrivateRoute path="/new" component={NewStuff} authed={authed} />
+                <PrivateRoute path="/edit/:stuffId" component={EditStuff} authed={authed} />
+                <PrivateRoute path="/stuff:stuffId" component={SingleStuff} authed={authed} />
+                <PublicRoute path="/auth" component={Auth} authed={authed} />
+                <Redirect from="*" to="/home" />
+              </Switch>
+            </div>
+          </React.Fragment>
+        </BrowserRouter>
       </div>
     );
   }
