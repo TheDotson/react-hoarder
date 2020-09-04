@@ -38,7 +38,11 @@ class App extends React.Component {
 
   componentDidMount() {
     this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-      user ? this.setState({ authed: true }) : this.setState({ authed: false });
+      if (user) {
+        this.setState({ authed: true });
+      } else {
+        this.setState({ authed: false });
+      }
     });
   }
 
@@ -57,7 +61,7 @@ class App extends React.Component {
             <div className="container">
               <Switch>
                 <PrivateRoute path="/home" component={Home} authed={authed} />
-                <PrivateRoute path="/new" component={NewStuff} authed={authed} />
+                <PrivateRoute path="/stuff/new" component={NewStuff} authed={authed} />
                 <PrivateRoute path="/edit/:stuffId" component={EditStuff} authed={authed} />
                 <PrivateRoute path="/stuff/:stuffId" component={SingleStuff} authed={authed} />
                 <PrivateRoute path="/stuff" component={MyStuff} authed={authed} />
