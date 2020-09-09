@@ -1,41 +1,40 @@
 import React from 'react';
-import itemData from '../../../helpers/data/itemData';
+import stuffData from '../../../helpers/data/stuffData';
 import authData from '../../../helpers/data/authData';
-import ItemCard from '../../shared/ItemCard/ItemCard';
+import StuffCard from '../../shared/StuffCard/StuffCard';
 import './MyStuff.scss';
 
 class MyStuff extends React.Component {
   state = {
-    items: [],
+    stuff: [],
   }
 
-  getItems = () => {
-    itemData.getItemByUid(authData.getUid())
-      .then((items) => this.setState({ items }))
-      .catch((err) => console.error('Get items failed', err));
+  goGetStuff = () => {
+    stuffData.getStuffByUid(authData.getUid())
+      .then((stuff) => this.setState({ stuff }))
+      .catch((err) => console.error(('couldnt get stuff', err)));
   }
 
   componentDidMount() {
-    this.getItems();
+    this.goGetStuff();
   }
 
-  deleteItem = (itemId) => {
-    itemData.deleteItem(itemId)
+  deleteItem = (pinId) => {
+    stuffData.deleteItem(pinId)
       .then(() => {
-        this.getItems();
+        this.goGetStuff();
       })
-      .catch((err) => console.error('Delete item failed', err));
+      .catch((err) => console.error(err));
   }
 
   render() {
-    const { items } = this.state;
-    const itemCards = items.map((item) => <ItemCard key={item.id} item={item} deleteItem={this.deleteItem}/>);
-
+    const { stuff } = this.state;
+    const stuffCards = stuff.map((item) => <StuffCard key={item.id} item={item} deleteItem={this.deleteItem}/>);
     return (
       <div>
-        <h1>My Stuff</h1>
+        <h1 className="text-center">My Stuff</h1>
         <div className="item-container">
-          {itemCards}
+          {stuffCards}
         </div>
       </div>
     );
