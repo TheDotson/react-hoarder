@@ -1,36 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import itemShape from '../../../helpers/props/itemShape';
 import itemData from '../../../helpers/data/itemData';
 
 class SingleStuff extends React.Component {
-  static propTypes = {
-    item: itemShape.itemShape,
-  }
-
   state = {
     item: {},
   }
 
-  getItemData = () => {
+  componentDidMount() {
     const { itemId } = this.props.match.params;
     itemData.getItemById(itemId)
       .then((res) => this.setState({ item: res.data }))
-      .catch((err) => console.error('Get single item failed', err));
+      .catch((err) => console.error(err));
   }
 
-  componentDidMount() {
-    this.getItemData();
-  }
-
-  deleteItemEvent = (e) => {
+  deleteItem = (e) => {
     e.preventDefault();
     const { itemId } = this.props.match.params;
     itemData.deleteItem(itemId)
       .then(() => {
         this.props.history.push('/stuff');
       })
-      .catch((err) => console.error('Delete item failed', err));
+      .catch((err) => console.error(err));
   }
 
   render() {
@@ -46,7 +37,7 @@ class SingleStuff extends React.Component {
         </div>
         <div className="card-footer">
           <Link to={editItemLink} className="btn btn-warning"><i className="fas fa-edit"></i></Link>
-          <button className="btn btn-danger" onClick={this.deleteItemEvent}><i className="fas fa-trash-alt"></i></button>
+          <button className="btn btn-danger" onClick={this.deleteItem}><i className="fas fa-trash-alt"></i></button>
           <i className="fas fa-edit"></i>
         </div>
       </div>
