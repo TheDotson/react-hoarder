@@ -23,4 +23,13 @@ const getItemByUid = (uid) => new Promise((resolve, reject) => {
 
 const createItem = (newItem) => axios.post(`${baseUrl}/items.json`, newItem);
 
-export default { createItem, getItemByUid };
+const getItemById = (itemId) => axios.get(`${baseUrl}.items/${itemId}.json`);
+
+const deleteItem = (itemId) => axios.delete(`${baseUrl}/items/${itemId}.json`);
+
+export default {
+  createItem,
+  getItemByUid,
+  deleteItem,
+  getItemById,
+};

@@ -1,14 +1,25 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import itemShape from '../../../helpers/props/itemShape';
 import './ItemCard.scss';
 
 class ItemCard extends React.Component {
   static propTypes = {
     item: itemShape.itemShape,
+    deleteItem: PropTypes.func.isRequired,
+  }
+
+  deleteItemEvent = (e) => {
+    e.preventDefault();
+    const { item, deleteItem } = this.props;
+    deleteItem(item.id);
   }
 
   render() {
     const { item } = this.props;
+    const editItemLink = `/edit/${item.id}`;
+    const singleItemLink = `/stuff/${item.id}`;
 
     return (
       <div className="card">
@@ -18,8 +29,9 @@ class ItemCard extends React.Component {
           <p className="card-text">{item.itemDescription}</p>
         </div>
         <div className="card-footer">
-          <i className="fas fa-trash-alt"></i>
-          <i className="fas fa-edit"></i>
+          <Link to={singleItemLink} className="btn btn-secondary"><i className="far fa-eye"></i></Link>
+          <Link to={editItemLink} className="btn btn-warning"><i className="fas fa-edit"></i></Link>
+          <button className="btn btn-danger" onClick={this.deleteItemEvent}><i className="fas fa-trash-alt"></i></button>
         </div>
       </div>
     );
